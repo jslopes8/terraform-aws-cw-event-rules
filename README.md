@@ -1,4 +1,4 @@
-# Terraform module to AWS IAM Role
+# Terraform module to AWS CloudWatch Event Rule
 
 The code will provide the following features on AWS.
 * [CloudWatch Event Rule](https://www.terraform.io/docs/providers/aws/r/cloudwatch_event_rule.html)
