@@ -1,3 +1,4 @@
+
 resource "aws_cloudwatch_event_rule" "main" {
     count = var.create ? 1 : 0
 
@@ -11,15 +12,22 @@ resource "aws_cloudwatch_event_rule" "main" {
 
     event_pattern   = var.event_pattern
 }
+
 resource "aws_cloudwatch_event_target" "main" {
-    depends_on = [ aws_cloudwatch_event_rule.main ]
+    count = var.create ? length(var.targets) : 0
 
-    count   = var.create ? length(var.add_targets) : 0
+    rule = aws_cloudwatch_event_rule.main.0.name
 
-    rule      = aws_cloudwatch_event_rule.main.0.name
+    arn         = lookup(var.targets[count.index], "arn", null)
+    target_id   = lookup(var.targets[count.index], "target_id", null)
 
-    target_id = lookup(var.add_targets[count.index], "target", null)
-    arn       = lookup(var.add_targets[count.index], "arn", null)
+    dynamic "input_transformer" {
+        for_each = lookup(var.targets[count.index], "input_transformer", [])
+        content {
+            input_paths     = lookup(input_transformer.value, "input_paths", null )
+            input_template  = lookup(input_transformer.value, "input_template", null)
+        }
+    }
 
-    
+    depends_on = [ aws_cloudwatch_event_rule.main, var.depends_modules ]
 }

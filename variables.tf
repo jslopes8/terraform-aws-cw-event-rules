@@ -23,10 +23,14 @@ variable "is_enabled" {
 }
 variable "event_pattern" {
     type    = any
+    default = {}
+}
+variable "targets" {
+    type    = any
     default = []
 }
-variable "add_targets" {
-    type    = any
+variable "depends_modules" {
+    type    = list
     default = []
 }
 variable "default_tags" {
